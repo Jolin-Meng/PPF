@@ -1,0 +1,4 @@
+*.xml
+*.ply
+*.png
+build/
