@@ -14,7 +14,7 @@ class TXTConverter:
         'end_header\n')
               
   def convert(self):
-    with open(self.input_txt_filename, 'a+') as fin, open(self.output_ply_filename, 'w') as fout:
+    with open(self.input_txt_filename, 'r') as fin, open(self.output_ply_filename, 'a') as fout:
       lines = fin.readlines()
       i=0
       #fout.write(self.ply_header % (len(lines)-1))
@@ -22,14 +22,19 @@ class TXTConverter:
 
         x, y, z = line.strip().split(',')
         if float(y)>2:
-            print(y)
-            i+=1
-            print(i)
-            out_str = '%f %f %f \n' % (float(x), float(y), float(z))
-            fout.write(out_str)
+          i+=1
+          #out_str = '%f %f %f \n' % (float(x), float(y), float(z))
+          #temp.append(out_str)
       print(self.output_ply_filename)
-      fout.seek(0, 0)
+      #fout.close()
+      #with open(self.output_ply_filename, 'a') as fout:
       fout.write(self.ply_header % (i))
+      for line in lines[:-1]:
+
+        x, y, z = line.strip().split(',')
+        if float(y)>2:
+          out_str = '%f %f %f \n' % (float(x), float(y), float(z))
+          fout.write(out_str)
 
 if __name__ == '__main__':
     #if len(sys.argv) is not 3:
