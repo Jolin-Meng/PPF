@@ -53,6 +53,7 @@ int main(int argc, char **argv)
   string sceneFileName = (string)argv[2];
 
   Mat pc = loadPLYSimple(modelFileName.c_str(), 1);
+  Mat pcNormals;
 
   int64 tick1, tick2;
 
@@ -65,8 +66,11 @@ int main(int argc, char **argv)
 
       cout << "Training..." << endl;
       tick1 = cv::getTickCount();
+      //compute normals for the model of object
+      Vec3d viewpoint(0, 0, 0);
+      computeNormalsPC3d(pc, pcNormals, 6, false, viewpoint);
       ppf_match_3d::PPF3DDetector detector(0.03, 0.03);
-      detector.trainModel(pc);
+      detector.trainModel(pcNormals);
       tick2 = cv::getTickCount();
 
       cout << "Training complete in "
@@ -163,7 +167,7 @@ int main(int argc, char **argv)
 
   cout << "Performing ICP on " << N << " poses..." << endl;
 
-  icp.registerModelToScene(pc, pointsAndNormals, resultsSub);
+  icp.registerModelToScene(pcNormals, pointsAndNormals, resultsSub);
   int64 t2 = cv::getTickCount();
 
   cout << "ICP Elapsed Time " << (t2 - t1) / cv::getTickFrequency() << " sec" << endl;
@@ -182,7 +186,7 @@ int main(int argc, char **argv)
     //if (i == 0)
     //{
     
-    Mat pct = transformPCPose(pc, result->pose);
+    Mat pct = transformPCPose(pcNormals, result->pose);
     writePLY(pct, (i+"para6700PCTrans.ply"));
     //}
   }
