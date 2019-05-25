@@ -52,7 +52,7 @@ int main(int argc, char **argv)
   string modelFileName = (string)argv[1];
   string sceneFileName = (string)argv[2];
 
-  Mat pc = loadPLYSimple(modelFileName.c_str(), 1);
+  Mat pc = loadPLYSimple(modelFileName.c_str());
   Mat pcNormals;
 
   int64 tick1, tick2;
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 
   // Read the scene
   Mat pointsAndNormals;
-  Mat pcTest = loadPLYSimple(sceneFileName.c_str(), 1);
+  Mat pcTest = loadPLYSimple(sceneFileName.c_str());
   // compute the normals for scene points
   Vec3d viewpoint(0, 0, 0);
   computeNormalsPC3d(pcTest, pointsAndNormals, 6, false, viewpoint);
