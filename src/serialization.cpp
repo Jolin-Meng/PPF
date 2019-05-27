@@ -52,8 +52,12 @@ int main(int argc, char **argv)
   string modelFileName = (string)argv[1];
   string sceneFileName = (string)argv[2];
 
-  Mat pc = loadPLYSimple(modelFileName.c_str());
+  Mat pc = loadPLYSimple(modelFileName.c_str(), 0);
+
+  //compute normals for the model of object
   Mat pcNormals;
+  Vec3d viewpoint(0, 0, 0);
+  computeNormalsPC3d(pc, pcNormals, 6, false, viewpoint);
 
   int64 tick1, tick2;
 
@@ -66,9 +70,6 @@ int main(int argc, char **argv)
 
       cout << "Training..." << endl;
       tick1 = cv::getTickCount();
-      //compute normals for the model of object
-      Vec3d viewpoint(0, 0, 0);
-      computeNormalsPC3d(pc, pcNormals, 6, false, viewpoint);
       ppf_match_3d::PPF3DDetector detector(0.03, 0.03);
       detector.trainModel(pcNormals);
       tick2 = cv::getTickCount();
@@ -117,9 +118,10 @@ int main(int argc, char **argv)
 
   // Read the scene
   Mat pointsAndNormals;
-  Mat pcTest = loadPLYSimple(sceneFileName.c_str());
+  Mat pcTest = loadTXTSimple(sceneFileName.c_str());
+  //Mat pcTest = loadPLYSimple(sceneFileName.c_str(), 0);
   // compute the normals for scene points
-  Vec3d viewpoint(0, 0, 0);
+  //Vec3d viewpoint(0, 0, 0);
   computeNormalsPC3d(pcTest, pointsAndNormals, 6, false, viewpoint);
 
   // Match the model to the scene and get the pose
@@ -183,12 +185,11 @@ int main(int argc, char **argv)
          << "Pose Result " << i << endl;
     result->printPose();
 
-    //if (i == 0)
-    //{
-    
-    Mat pct = transformPCPose(pcNormals, result->pose);
-    writePLY(pct, (i+"para6700PCTrans.ply"));
-    //}
+    if (i == 0)
+    {
+      Mat pct = transformPCPose(pcNormals, result->pose);
+      writePLY(pct, "para6700PCTrans.ply");
+    }
   }
 
   return 0;

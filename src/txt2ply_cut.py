@@ -21,7 +21,7 @@ class TXTConverter:
       for line in lines[:-1]:
 
         x, y, z = line.strip().split(',')
-        if float(y)>2:
+        if float(z)>=2:
           i+=1
           #out_str = '%f %f %f \n' % (float(x), float(y), float(z))
           #temp.append(out_str)
@@ -32,7 +32,7 @@ class TXTConverter:
       for line in lines[:-1]:
 
         x, y, z = line.strip().split(',')
-        if float(y)>2:
+        if float(z)>=2:
           out_str = '%f %f %f \n' % (float(x), float(y), float(z))
           fout.write(out_str)
 
